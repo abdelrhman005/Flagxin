@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,700;0,800;0,900;1,900&amp;family=Inter:wght@400;700&amp;family=Space+Grotesk:wght@400;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── Reset & base ── */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        /* ── Grain overlay ── */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* ── Max-width container system ── */
+        .site-container {
+            width: 100%;
+            max-width: 1400px;
+            margin-inline: auto;
+            padding-inline: clamp(1rem, 4vw, 4rem);
+        }
+
+        /* ── Shadows ── */
+        .hard-shadow-red {
+            box-shadow: 6px 6px 0px 0px #e10600;
+        }
+
+        .hard-shadow-white {
+            box-shadow: 4px 4px 0px 0px #ffffff;
+        }
+
+        /* ── Skew cards ── */
+        .skew-card:nth-child(odd)  { transform: rotate(-1deg); }
+        .skew-card:nth-child(even) { transform: rotate(1.5deg); }
+
+        /* ── Material icons ── */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* ── Hero fluid heading ── */
+        .hero-title {
+            font-size: clamp(3rem, 9vw, 8rem);
+            line-height: 0.92;
+            font-style: italic;
+            font-weight: 900;
+            font-family: 'Epilogue', sans-serif;
+            color: white;
+            user-select: none;
+        }
+
+        /* ── Decorative bg text ── */
+        .bg-raw-text {
+            font-size: clamp(6rem, 15vw, 12.5rem);
+        }
+
+        /* ── Product grid ── */
+        .product-grid {
+            display: grid;
+            gap: clamp(1rem, 2vw, 1.5rem);
+            grid-template-columns: repeat(3, minmax(min(100%, 260px), 340px));
+            justify-content: center;
+        }
+        @media (max-width: 900px) {
+            .product-grid { grid-template-columns: repeat(2, minmax(min(100%, 260px), 340px)); }
+        }
+        @media (max-width: 560px) {
+            .product-grid { grid-template-columns: minmax(0, 380px); }
+        }
+
+        /* ── Images always responsive ── */
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* ── Product card hover lift & glow ── */
+        .product-card {
+            background: #000;
+            border: 2px solid #27272a;
+            padding: 0.5rem;
+            transition:
+                transform 0.25s cubic-bezier(.22,.68,0,1.2),
+                border-color 0.2s ease,
+                box-shadow 0.25s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: #e10600;
+            box-shadow: 0 16px 40px -8px rgba(225, 6, 0, 0.35);
+        }
+        .product-card .card-img-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.85);
+            transition: filter 0.45s ease, transform 0.45s ease;
+        }
+        .product-card:hover .card-img-wrap img {
+            filter: grayscale(0%) brightness(1);
+            transform: scale(1.04);
+        }
+
+        .product-card .carousel {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+        .product-card .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .product-card .carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        .product-card .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.85);
+            transition: filter 0.45s ease, transform 0.45s ease;
+        }
+        .product-card:hover .carousel-slide.active img {
+            filter: grayscale(0%) brightness(1);
+            transform: scale(1.04);
+        }
+        .product-card .carousel-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 0.75rem;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .product-card .carousel-btn {
+            pointer-events: all;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(0,0,0,0.45);
+            color: white;
+            width: 2.6rem;
+            height: 2.6rem;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+        .product-card .carousel-btn:hover {
+            background: rgba(225,6,0,0.95);
+            border-color: rgba(225,6,0,0.95);
+            transform: scale(1.05);
+        }
+        .product-card .carousel-indicators {
+            position: absolute;
+            left: 50%;
+            bottom: 0.75rem;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 2;
+        }
+        .product-card .carousel-dot {
+            border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(0,0,0,0.35);
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 999px;
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+        .product-card .carousel-dot.active {
+            background: #e10600;
+            transform: scale(1.2);
+        }
+
+        /* ── Coming Soon card ── */
+        .coming-soon-card {
+            background: #0c0f0f;
+            border: 2px dashed #3f3f46;
+            padding: 0.5rem;
+            opacity: 0.82;
+            transition:
+                transform 0.25s cubic-bezier(.22,.68,0,1.2),
+                border-color 0.2s ease,
+                opacity 0.2s ease;
+        }
+        .coming-soon-card:hover {
+            transform: translateY(-4px);
+            border-color: #e10600;
+            opacity: 1;
+        }
+        .coming-soon-noise {
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(225,6,0,0.03) 0px,
+                    rgba(225,6,0,0.03) 1px,
+                    transparent 1px,
+                    transparent 8px
+                );
+        }
+        .coming-soon-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.62);
+            backdrop-filter: blur(2px);
+            gap: 0.75rem;
+        }
+        .cs-badge {
+            background: #e10600;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+            letter-spacing: 0.14em;
+            padding: 0.35rem 1rem;
+            text-transform: uppercase;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(225,6,0,0.7); }
+            50%       { box-shadow: 0 0 0 8px rgba(225,6,0,0); }
+        }
+        .cs-lock-icon {
+            color: rgba(255,255,255,0.55);
+            font-size: 2.5rem;
+        }
+
+        /* ── Wishlist Button ── */
+        .wishlist-btn.active .wishlist-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            color: #e10600;
+            animation: heart-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes heart-bounce {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        /* ── Badge top-right corner ── */
+        .card-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(0.65rem, 1vw, 0.75rem);
+            letter-spacing: 0.1em;
+            padding: 0.25rem 0.65rem;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        /* ── Scroll Reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .active .reveal-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .active .reveal-item:nth-child(1) { transition-delay: 0.1s; }
+        .active .reveal-item:nth-child(2) { transition-delay: 0.3s; }
+        .active .reveal-item:nth-child(3) { transition-delay: 0.5s; }
+
+        /* ── Breakpoint overrides ── */
+        @media (max-width: 768px) {
+            .hard-shadow-red { box-shadow: 4px 4px 0px 0px #e10600; }
+            .hard-shadow-white { box-shadow: 3px 3px 0px 0px #ffffff; }
+            .skew-card:nth-child(odd),
+            .skew-card:nth-child(even) { transform: none; }
+            .product-card:hover,
+            .coming-soon-card:hover { transform: none; }
+        }
+
+        /* ── Toast Notification ── */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            pointer-events: none;
+        }
+        .toast {
+            background: #1e2020;
+            border-left: 4px solid #e10600;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto;
+        }
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* ── Wishlist Modal ── */
+        .wishlist-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .wishlist-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .wishlist-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            max-width: 400px;
+            background: #121414;
+            border-left: 2px solid #27272a;
+            z-index: 10001;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .wishlist-overlay.open .wishlist-sidebar {
+            transform: translateX(0);
+        }
+        .wishlist-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #27272a;
+            align-items: center;
+        }
+        .wishlist-item img {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#2f3131",
+                        "surface-bright": "#37393a",
+                        "surface": "#121414",
+                        "on-surface": "#e2e2e2",
+                        "on-tertiary-container": "#f8f5f4",
+                        "secondary": "#c6c6c6",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary": "#303030",
+                        "on-error": "#690005",
+                        "surface-dim": "#121414",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e2e2e2",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-secondary-container": "#b5b5b5",
+                        "outline": "#af8781",
+                        "on-primary-container": "#fff2f0",
+                        "inverse-primary": "#c00500",
+                        "on-primary-fixed-variant": "#930300",
+                        "tertiary-container": "#717070",
+                        "primary-fixed": "#ffdad4",
+                        "primary": "#ffb4a8",
+                        "surface-container-highest": "#333535",
+                        "on-primary": "#680200",
+                        "on-surface-variant": "#e9bcb5",
+                        "surface-container-low": "#1a1c1c",
+                        "on-tertiary": "#313030",
+                        "surface-variant": "#333535",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "primary-container": "#e10600",
+                        "surface-container": "#1e2020",
+                        "primary-fixed-dim": "#ffb4a8",
+                        "on-primary-fixed": "#410100",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "surface-tint": "#ffb4a8",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-secondary-fixed-variant": "#474747",
+                        "background": "#121414",
+                        "secondary-fixed-dim": "#c6c6c6",
+                        "secondary-container": "#474747",
+                        "outline-variant": "#5e3f3a",
+                        "on-secondary-fixed": "#1b1b1b",
+                        "secondary-fixed": "#e2e2e2",
+                        "tertiary": "#c8c6c5",
+                        "error-container": "#93000a"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "display-xl": ["Epilogue"],
+                        "price-tag": ["Space Grotesk"],
+                        "label-bold": ["Space Grotesk"],
+                        "headline-lg": ["Epilogue"],
+                        "headline-md": ["Epilogue"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["clamp(1rem, 1.5vw, 1.125rem)", { "lineHeight": "160%", "fontWeight": "400" }],
+                        "display-xl": ["clamp(3rem, 8vw, 5rem)", { "lineHeight": "90%", "letterSpacing": "-0.05em", "fontWeight": "900" }],
+                        "price-tag": ["clamp(1.25rem, 2vw, 1.5rem)", { "lineHeight": "100%", "fontWeight": "700" }],
+                        "label-bold": ["clamp(0.75rem, 1vw, 0.875rem)", { "lineHeight": "100%", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-lg": ["clamp(2rem, 4vw, 3rem)", { "lineHeight": "100%", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["clamp(1.375rem, 2.5vw, 2rem)", { "lineHeight": "110%", "fontWeight": "800" }],
+                        "body-md": ["clamp(0.875rem, 1.25vw, 1rem)", { "lineHeight": "150%", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+    <div class="grain-overlay"></div>
+    <!-- TopNavBar -->
+    <header
+        class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 w-full bg-black border-b-4 border-red-600 shadow-[4px_4px_0px_0px_rgba(225,6,0,1)]">
+        <div class="text-3xl font-black italic text-white uppercase tracking-widest font-epilogue">Flagxin</div>
+        <nav class="hidden md:flex gap-8 items-center">
+            <a class="text-red-600 font-bold border-b-2 border-red-600 font-epilogue uppercase tracking-tighter hover:skew-x-1 transition-transform duration-75 active:translate-y-1 active:shadow-none"
+                href="#home">HOME</a>
+            <a class="text-white font-epilogue font-black uppercase tracking-tighter hover:skew-x-1 transition-transform duration-75 active:translate-y-1 active:shadow-none"
+                href="#drops">DROPS</a>
+            <a class="text-white font-epilogue font-black uppercase tracking-tighter hover:skew-x-1 transition-transform duration-75 active:translate-y-1 active:shadow-none"
+                href="#lab">LAB</a>
+            <a class="text-white font-epilogue font-black uppercase tracking-tighter hover:skew-x-1 transition-transform duration-75 active:translate-y-1 active:shadow-none open-wishlist-btn"
+                href="javascript:void(0)">BAG</a>
+        </nav>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-white cursor-pointer hover:text-red-600 transition-colors open-wishlist-btn"
+                    data-icon="favorite">favorite</span>
+            </div>
+        </div>
+    </header>
+    <!-- Hero Section -->
+    <section id="home"
+        class="relative flex flex-col items-center justify-center bg-black overflow-hidden"
+        style="min-height: clamp(28rem, 80vh, 56rem); padding: clamp(3rem, 8vh, 6rem) 1rem;">
+        <!-- Spray Paint Background Elements -->
+        <div
+            class="absolute top-20 -left-20 bg-primary-container rounded-full opacity-20 pointer-events-none"
+            style="width: clamp(12rem, 25vw, 24rem); height: clamp(12rem, 25vw, 24rem); filter: blur(clamp(4rem, 8vw, 7.5rem));">
+        </div>
+        <div
+            class="absolute bottom-0 -right-20 bg-red-900 rounded-full opacity-10 pointer-events-none"
+            style="width: clamp(16rem, 32vw, 31rem); height: clamp(16rem, 32vw, 31rem); filter: blur(clamp(5rem, 10vw, 9.375rem));">
+        </div>
+        <div class="site-container z-10 text-center">
+            <div
+                class="inline-block bg-white text-black font-label-bold px-4 py-1 mb-8 -rotate-2 border-2 border-red-600">
+                LIMITEDEDITION CLAW BACKS
+            </div>
+            <h1 class="hero-title mb-4">
+                <span class="block">Flagxin</span>
+                <span class="block text-transparent" style="-webkit-text-stroke: 2px white; margin-top: 15px;">CULTURE</span>
+            </h1>
+            <p class="font-headline-md text-red-600 italic tracking-widest uppercase mb-12">We don’t just make flags
+We create statements </p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <a href="#drops"
+                    class="bg-primary-container text-white border-2 border-white font-headline-md hard-shadow-white hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all active:scale-95 uppercase text-center"
+                    style="padding: clamp(0.75rem, 2vh, 1.25rem) clamp(2rem, 5vw, 3rem);">
+                    Buy now!
+                </a>
+                <a href="#contact"
+                    class="bg-black text-white border-2 border-red-600 font-headline-md hover:bg-red-600 transition-all uppercase text-center"
+                    style="padding: clamp(0.75rem, 2vh, 1.25rem) clamp(2rem, 5vw, 3rem);">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-10 md:left-24 animate-pulse">
+            <span class="font-label-bold text-white tracking-[0.4em] uppercase [writing-mode:vertical-lr]">Scroll for
+                Grit</span>
+        </div>
+    </section>
+    <!-- Fresh Drops Grid -->
+    <section id="drops" class="bg-surface" style="padding: clamp(3rem, 6vw, 6rem) 0;">
+        <div class="site-container">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+            <div>
+                <h2 class="font-headline-lg text-white uppercase italic">Fresh Drops</h2>
+                <p class="font-body-lg text-secondary" style="max-width: 38rem;">Don't sleep on the latest tactical streetwear
+                    essentials. Once they're gone, they're history.</p>
+            </div>
+            <div
+                class="font-label-bold text-red-600 border-b-2 border-red-600 pb-2 cursor-pointer hover:tracking-widest transition-all whitespace-nowrap">
+                VIEW ALL DROP HISTORY
+            </div>
+        </div>
+        <div class="product-grid">
+
+            <!-- ── Card 1 · product1.png ── -->
+            <div class="product-card skew-card">
+                <div class="card-img-wrap aspect-[3/4]">
+                    <img alt="Marwan Pablo Flag" src="imges/product1.png" />
+                    <span class="card-badge bg-green-600 text-white">IN STOCK</span>
+                </div>
+                <div style="padding: 1.25rem 1rem 1rem;">
+                    <div class="flex justify-between items-start" style="margin-bottom: 0.375rem;">
+                        <h3 class="font-headline-md text-white" style="font-size: clamp(1rem, 2vw, 1.2rem);">Marwan Pablo Flag</h3>
+                        <span class="font-price-tag text-red-600">$500</span>
+                    </div>
+                    <div class="font-label-bold text-secondary uppercase" style="margin-bottom: 1rem;"></div>
+                    <div class="flex gap-3">
+                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-1" data-product-name="GRIT HOODIE V1" data-product-image="imges/product1.png" aria-label="Add to wishlist">
+                            <span class="material-symbols-outlined wishlist-icon" style="font-size: 1.5rem;">favorite</span>
+                        </button>
+                        <a href="https://wa.me/201288640166?text=Hi%2C%20I%20want%20to%20buy%20GRIT%20HOODIE%20V1" target="_blank" rel="noopener noreferrer" class="flex-grow flex items-center justify-center font-label-bold text-white bg-red-600 border-2 border-red-600 hover:bg-black hover:shadow-[0_0_15px_rgba(225,6,0,0.4)] transition-all active:scale-95 uppercase" style="padding: 0.65rem 0;">
+                            Buy Now!
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Card 2 · product2.png + extra image carousel ── -->
+            <div class="product-card skew-card">
+                <div class="card-img-wrap aspect-[3/4]">
+                    <div class="carousel" data-carousel="prod-2">
+                        <div class="carousel-slide active">
+                            <img alt="Shehab Flag Alexandria Edition" src="imges/product2.png" />
+                        </div>
+                        <div class="carousel-slide">
+                            <img alt="Shehab Alexandria flag detail" src="imges/shehap flag alexandria.jpg" />
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="carousel-btn carousel-prev" type="button" aria-label="Previous image">
+                                <span class="material-symbols-outlined">chevron_left</span>
+                            </button>
+                            <button class="carousel-btn carousel-next" type="button" aria-label="Next image">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </button>
+                        </div>
+                        <div class="carousel-indicators">
+                            <button class="carousel-dot active" type="button" aria-label="Show image 1"></button>
+                            <button class="carousel-dot" type="button" aria-label="Show image 2"></button>
+                        </div>
+                    </div>
+                    <span class="card-badge bg-green-600 text-white">IN STOCK</span>
+                </div>
+                <div style="padding: 1.25rem 1rem 1rem;">
+                    <div class="flex justify-between items-start" style="margin-bottom: 0.375rem;">
+                        <h3 class="font-headline-md text-white" style="font-size: clamp(1rem, 2vw, 1.2rem);">Shehab Flag</h3>
+                        <span class="font-price-tag text-red-600">$350</span>
+                    </div>
+                    <div class="font-label-bold text-secondary uppercase" style="margin-bottom: 1rem;">Alexandria Edition</div>
+                    <div class="flex gap-3">
+                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-2" data-product-name="VOID STRIDERS" data-product-image="imges/product2.png" aria-label="Add to wishlist">
+                            <span class="material-symbols-outlined wishlist-icon" style="font-size: 1.5rem;">favorite</span>
+                        </button>
+                        <a href="https://wa.me/201288640166?text=Hi%2C%20I%20want%20to%20buy%20VOID%20STRIDERS" target="_blank" rel="noopener noreferrer" class="flex-grow flex items-center justify-center font-label-bold text-white bg-red-600 border-2 border-red-600 hover:bg-black hover:shadow-[0_0_15px_rgba(225,6,0,0.4)] transition-all active:scale-95 uppercase" style="padding: 0.65rem 0;">
+                            Buy Now!
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Card 3 · product3.png ── -->
+            <div class="product-card skew-card">
+                <div class="card-img-wrap aspect-[3/4]">
+                    <img alt="Void Striders" src="imges/product3.png" />
+                    <span class="card-badge bg-white text-black italic">NEW</span>
+                </div>
+                <div style="padding: 1.25rem 1rem 1rem;">
+                    <div class="flex justify-between items-start" style="margin-bottom: 0.375rem;">
+                        <h3 class="font-headline-md text-white" style="font-size: clamp(1rem, 2vw, 1.2rem);">Mrazmen Flag</h3>
+                        <span class="font-price-tag text-red-600">$400</span>
+                    </div>
+                    <div class="font-label-bold text-secondary uppercase" style="margin-bottom: 1rem;"></div>
+                    <div class="flex gap-3">
+                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-2" data-product-name="VOID STRIDERS" data-product-image="imges/product2.png" aria-label="Add to wishlist">
+                            <span class="material-symbols-outlined wishlist-icon" style="font-size: 1.5rem;">favorite</span>
+                        </button>
+                        <a href="https://wa.me/201288640166?text=Hi%2C%20I%20want%20to%20buy%20VOID%20STRIDERS" target="_blank" rel="noopener noreferrer" class="flex-grow flex items-center justify-center font-label-bold text-white bg-red-600 border-2 border-red-600 hover:bg-black hover:shadow-[0_0_15px_rgba(225,6,0,0.4)] transition-all active:scale-95 uppercase" style="padding: 0.65rem 0;">
+                            Buy Now!
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Card 4 · Coming Soon ── -->
+            <div class="coming-soon-card skew-card" aria-label="Coming Soon">
+                <div class="card-img-wrap aspect-[3/4]" style="position: relative;">
+                    <!-- Blurred noise background standing in for the real image -->
+                    <div style="
+                        width: 100%; height: 100%;
+                        background:
+                            radial-gradient(ellipse at 30% 40%, rgba(225,6,0,0.18) 0%, transparent 60%),
+                            radial-gradient(ellipse at 75% 70%, rgba(255,255,255,0.06) 0%, transparent 55%),
+                            #111;
+                        filter: blur(0px);
+                    "></div>
+                    <!-- Diagonal hatch pattern overlay -->
+                    <div class="coming-soon-noise"></div>
+                    <!-- Central overlay with badge + lock -->
+                    <div class="coming-soon-overlay">
+                        <span class="material-symbols-outlined cs-lock-icon">lock</span>
+                        <span class="cs-badge">Coming Soon</span>
+                        <span class="font-label-bold text-zinc-500 uppercase" style="font-size: 0.65rem; letter-spacing: 0.15em;">Drop TBA</span>
+                    </div>
+                </div>
+                <div style="padding: 1.25rem 1rem 1rem;">
+                    <div class="flex justify-between items-start" style="margin-bottom: 0.375rem;">
+                        <h3 class="font-headline-md text-zinc-500" style="font-size: clamp(1rem, 2vw, 1.2rem); font-style: italic;">??? UNRELEASED</h3>
+                        <span class="font-price-tag text-zinc-600">—</span>
+                    </div>
+                    <div class="font-label-bold text-zinc-700 uppercase" style="margin-bottom: 1rem;">Classified</div>
+                    <button
+                        disabled
+                        class="w-full font-label-bold text-zinc-700 border-2 border-zinc-800 cursor-not-allowed"
+                        style="padding: 0.65rem 0;">
+                        STAY TUNED
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        </div><!-- /.site-container -->
+    </section>
+
+    <!-- Custom Flag Design Section -->
+    <section id="lab" class="relative py-32 overflow-hidden bg-black border-t-2 border-zinc-900 reveal">
+        <!-- Streetwear Texture Background -->
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+            <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 50%, rgba(225, 6, 0, 0.15) 0%, transparent 70%);"></div>
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M54.627 0l.83.83L1.457 54.827l-.83-.83L54.627 0zM0 54.627l.83.83L54.827 1.457l-.83-.83L0 54.627z\' fill=\'%23e10600\' fill-opacity=\'0.1\' fill-rule=\'evenodd\'/%3E%3C/svg%3E');"></div>
+        </div>
+        
+        <div class="site-container relative z-10 text-center">
+            <div class="inline-block bg-white text-black font-label-bold px-4 py-1 mb-8 rotate-1 border-2 border-red-600 reveal-item">
+                CREATIVE LAB
+            </div>
+            <h2 class="font-display-xl text-white text-[clamp(2.5rem,7vw,5rem)] leading-[0.95] italic uppercase mb-8 reveal-item">
+                Make Your Own <span class="text-primary-container">Flag</span><br>With Your Style
+            </h2>
+            <p class="font-body-lg text-secondary max-w-2xl mx-auto mb-14 reveal-item">
+                Design your own unique flag that represents your vibe and style. 
+                Whether it's for your room, your crew, or your brand — we bring your vision to life with elite craftsmanship.
+            </p>
+            <div class="reveal-item">
+                <a class="group relative px-16 py-6 bg-primary-container text-white font-headline-md uppercase transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(225,6,0,0.6)] active:scale-95" href="https://wa.me/201288640166?text=Hi%2C%20I%20want%20to%20design%20a%20custom%20flag%20with%20you">
+                    <span class="relative z-10">Contact With Us</span>
+                    <div class="absolute inset-0 border-2 border-white translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Decorative Elements -->
+        <div class="absolute bottom-0 right-0 opacity-5 select-none pointer-events-none translate-y-1/2 translate-x-1/4">
+            <span class="text-[30vw] font-black italic uppercase text-white">Flagxin</span>
+        </div>
+    </section>
+
+    <!-- Contact & Socials Section -->
+    <section class="bg-zinc-950 py-24 border-t-2 border-zinc-900 reveal" id="contact">
+        <div class="site-container">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <!-- Left: Socials -->
+                <div class="reveal-item">
+                    <h2 class="font-headline-lg text-white uppercase italic mb-6">Hit Us Up</h2>
+                    <p class="font-body-lg text-secondary mb-10 max-w-md">
+                        Got a question, custom request, or just want to show some love? Reach out through our socials or drop a message below.
+                    </p>
+                    <div class="flex flex-col gap-4">
+                        <a href="https://www.instagram.com/flag.xin/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 bg-zinc-900 p-4 border border-zinc-800 hover:border-red-600 hover:bg-black transition-all group">
+                            <div class="w-12 h-12 bg-black flex items-center justify-center text-white group-hover:text-red-600 transition-colors">
+                                <!-- Instagram SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                            </div>
+                            <span class="font-headline-md text-white uppercase text-xl">Instagram</span>
+                        </a>
+                        <a href="https://wa.me/201288640166" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 bg-zinc-900 p-4 border border-zinc-800 hover:border-red-600 hover:bg-black transition-all group">
+                            <div class="w-12 h-12 bg-black flex items-center justify-center text-white group-hover:text-red-600 transition-colors">
+                                <!-- WhatsApp SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            </div>
+                            <span class="font-headline-md text-white uppercase text-xl">WhatsApp</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@flagxin?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 bg-zinc-900 p-4 border border-zinc-800 hover:border-red-600 hover:bg-black transition-all group">
+                            <div class="w-12 h-12 bg-black flex items-center justify-center text-white group-hover:text-red-600 transition-colors">
+                                <!-- TikTok SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                            </div>
+                            <span class="font-headline-md text-white uppercase text-xl">TikTok</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Form -->
+                <div class="bg-black border-2 border-zinc-800 p-8 reveal-item flex flex-col justify-center">
+                    <h3 class="font-headline-md text-white uppercase mb-6">Send a Message</h3>
+                    <form class="space-y-4" onsubmit="event.preventDefault(); showToast('Message Sent!', 'send'); this.reset();">
+                        <div>
+                            <input type="text" placeholder="YOUR NAME" required class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="EMAIL ADDRESS" required class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600">
+                        </div>
+                        <div>
+                            <textarea placeholder="WHAT'S ON YOUR MIND?" required rows="4" class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600 resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-red-600 text-white font-headline-md uppercase py-4 hover:bg-white hover:text-black transition-all active:scale-95">
+                            Submit Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / BottomNavBar -->
+    <footer class="bg-black border-t-4 border-red-600" style="padding: clamp(3rem, 6vw, 6rem) 0 clamp(5rem, 8vh, 3rem);">
+        <div class="site-container">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div class="col-span-1 md:col-span-2">
+                <div class="text-4xl font-black text-white italic mb-8">Flagxin</div>
+                <div class="flex gap-4">
+                    <a class="w-10 h-10 flex items-center justify-center bg-zinc-900 hover:bg-red-600 transition-colors text-white"
+                        href="https://www.instagram.com/flag.xin/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                    <a class="w-10 h-10 flex items-center justify-center bg-zinc-900 hover:bg-red-600 transition-colors text-white"
+                        href="https://wa.me/201288640166" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </a>
+                    <a class="w-10 h-10 flex items-center justify-center bg-zinc-900 hover:bg-red-600 transition-colors text-white"
+                        href="https://www.tiktok.com/@flagxin?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-label-bold text-white mb-6 uppercase tracking-widest">Support</h4>
+                <ul class="font-body-md text-secondary space-y-3">
+                    <li class="hover:text-red-600 cursor-pointer">Shipping Policy</li>
+                    <li class="hover:text-red-600 cursor-pointer">Returns</li>
+                    <li class="hover:text-red-600 cursor-pointer">Size Guide</li>
+                    <li class="hover:text-red-600 cursor-pointer">Contact</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-label-bold text-white mb-6 uppercase tracking-widest">Join the Void</h4>
+                <div class="flex border-2 border-zinc-800">
+                    <input
+                        class="bg-transparent border-none w-full px-4 text-white font-label-bold placeholder:text-zinc-700 focus:ring-0"
+                        placeholder="EMAIL ADDRESS" type="email" />
+                    <button class="bg-white text-black p-2 font-black">GO</button>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row justify-between pt-8 border-t border-zinc-900">
+            <p class="font-label-bold text-zinc-700">© 2026 Flagxin  LTD. ALL RIGHTS RESERVED.</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+                <span class="font-label-bold text-zinc-700 uppercase">Privacy</span>
+                <span class="font-label-bold text-zinc-700 uppercase">Terms</span>
+            </div>
+        </div>
+        </div><!-- /.site-container -->
+    </footer>
+    <!-- BottomNavBar (Mobile Only) -->
+    <nav
+        class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-black border-t-2 border-white md:hidden">
+        <a class="flex flex-col items-center justify-center bg-red-600 text-white rounded-none p-2 -rotate-2 scale-110 active:scale-90 transition-all duration-100"
+            href="#home">
+            <span class="material-symbols-outlined" data-icon="home">home</span>
+            <span class="font-epilogue font-bold text-[10px] uppercase">HOME</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-red-500 active:scale-90 transition-all duration-100"
+            href="#drops">
+            <span class="material-symbols-outlined" data-icon="release_alert">release_alert</span>
+            <span class="font-epilogue font-bold text-[10px] uppercase">DROPS</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-red-500 active:scale-90 transition-all duration-100"
+            href="#lab">
+            <span class="material-symbols-outlined" data-icon="science">science</span>
+            <span class="font-epilogue font-bold text-[10px] uppercase">LAB</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-red-500 active:scale-90 transition-all duration-100 open-wishlist-btn"
+            href="javascript:void(0)">
+            <span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+            <span class="font-epilogue font-bold text-[10px] uppercase">WISH</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-red-500 active:scale-90 transition-all duration-100"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="local_mall">local_mall</span>
+            <span class="font-epilogue font-bold text-[10px] uppercase">BAG</span>
+        </a>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Wishlist Modal -->
+    <div class="wishlist-overlay" id="wishlistOverlay">
+        <div class="wishlist-sidebar" id="wishlistSidebar" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center p-6 border-b-2 border-zinc-800">
+                <h2 class="font-headline-md text-white uppercase italic text-2xl">Your Wishlist</h2>
+                <button class="text-zinc-500 hover:text-white transition-colors" id="closeWishlistBtn">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="flex-grow overflow-y-auto p-4 flex flex-col gap-2" id="wishlistItemsContainer">
+                <!-- Items will be injected here via JS -->
+            </div>
+            <div class="p-6 border-t-2 border-zinc-800 bg-black">
+                <button class="w-full bg-red-600 text-white font-label-bold py-4 hover:bg-white hover:text-black transition-colors" id="checkoutWishlistBtn">
+                    CONTACT TO BUY ALL
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Scroll Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Initial check
+        reveal();
+
+        // Toast Function
+        function showToast(message, icon = 'check_circle') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span class="material-symbols-outlined text-red-600">${icon}</span> ${message}`;
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Wishlist Logic
+        document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.carousel').forEach(carouselEl => {
+                    const slides = Array.from(carouselEl.querySelectorAll('.carousel-slide'));
+                    const dots = Array.from(carouselEl.querySelectorAll('.carousel-dot'));
+                    const prevBtn = carouselEl.querySelector('.carousel-prev');
+                    const nextBtn = carouselEl.querySelector('.carousel-next');
+                    let currentIndex = slides.findIndex(slide => slide.classList.contains('active'));
+                    if (currentIndex < 0) currentIndex = 0;
+
+                    const updateCarousel = (index) => {
+                        slides.forEach((slide, idx) => slide.classList.toggle('active', idx === index));
+                        dots.forEach((dot, idx) => dot.classList.toggle('active', idx === index));
+                        currentIndex = index;
+                    };
+
+                    const showPrevious = (event) => {
+                        event.stopPropagation();
+                        updateCarousel((currentIndex - 1 + slides.length) % slides.length);
+                    };
+
+                    const showNext = (event) => {
+                        event.stopPropagation();
+                        updateCarousel((currentIndex + 1) % slides.length);
+                    };
+
+                    prevBtn?.addEventListener('click', showPrevious);
+                    nextBtn?.addEventListener('click', showNext);
+                    dots.forEach((dot, idx) => dot.addEventListener('click', () => updateCarousel(idx)));
+
+                    let autoRotate = setInterval(() => updateCarousel((currentIndex + 1) % slides.length), 6000);
+                    carouselEl.addEventListener('mouseenter', () => clearInterval(autoRotate));
+                    carouselEl.addEventListener('mouseleave', () => {
+                        autoRotate = setInterval(() => updateCarousel((currentIndex + 1) % slides.length), 6000);
+                    });
+                });
+
+            const wishlistItemsContainer = document.getElementById('wishlistItemsContainer');
+            
+            // Load from localStorage
+            let wishlist = JSON.parse(localStorage.getItem('flagxin_wishlist')) || [];
+            
+            function renderWishlist() {
+                if (wishlist.length === 0) {
+                    wishlistItemsContainer.innerHTML = '<div class="text-zinc-500 text-center p-8 font-label-bold">Your wishlist is empty</div>';
+                    return;
+                }
+                
+                wishlistItemsContainer.innerHTML = wishlist.map((item, index) => `
+                    <div class="wishlist-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="flex-grow">
+                            <div class="font-label-bold text-white mb-1">${item.name}</div>
+                            <a href="https://wa.me/201288640166?text=Hi%2C%20I%20want%20to%20buy%20${encodeURIComponent(item.name)}" target="_blank" class="text-red-600 text-xs font-bold uppercase hover:underline">Buy Now</a>
+                        </div>
+                        <button class="text-zinc-600 hover:text-red-600 transition-colors" onclick="removeWishlistItem('${item.id}')">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            window.removeWishlistItem = function(id) {
+                wishlist = wishlist.filter(item => item.id !== id);
+                localStorage.setItem('flagxin_wishlist', JSON.stringify(wishlist));
+                renderWishlist();
+                
+                // Update main page buttons
+                document.querySelectorAll(`.wishlist-btn[data-product-id="${id}"]`).forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                showToast('Removed from wishlist', 'delete');
+            };
+
+            // Modal Toggles
+            document.querySelectorAll('.open-wishlist-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    renderWishlist();
+                    wishlistOverlay.classList.add('open');
+                });
+            });
+            
+            document.getElementById('closeWishlistBtn').addEventListener('click', () => {
+                wishlistOverlay.classList.remove('open');
+            });
+            
+            wishlistOverlay.addEventListener('click', () => {
+                wishlistOverlay.classList.remove('open');
+            });
+
+            // Initial state
+            wishlistBtns.forEach(btn => {
+                const id = btn.dataset.productId;
+                if (wishlist.some(item => item.id === id)) {
+                    btn.classList.add('active');
+                }
+                
+                btn.addEventListener('click', (e) => {
+                    const productId = btn.dataset.productId;
+                    const productName = btn.dataset.productName;
+                    const productImage = btn.dataset.productImage;
+                    
+                    const index = wishlist.findIndex(item => item.id === productId);
+                    
+                    if (index > -1) {
+                        // Remove from wishlist
+                        wishlist.splice(index, 1);
+                        btn.classList.remove('active');
+                        showToast('Removed from wishlist', 'delete');
+                    } else {
+                        // Add to wishlist
+                        wishlist.push({
+                            id: productId,
+                            name: productName,
+                            image: productImage
+                        });
+                        btn.classList.add('active');
+                        showToast('Added to wishlist!', 'favorite');
+                    }
+                    
+                    // Save
+                    localStorage.setItem('flagxin_wishlist', JSON.stringify(wishlist));
+                    if (wishlistOverlay.classList.contains('open')) renderWishlist();
+                });
+            });
+            
+            // Checkout All Button
+            document.getElementById('checkoutWishlistBtn').addEventListener('click', () => {
+                if(wishlist.length === 0) {
+                    showToast('Wishlist is empty!', 'error');
+                    return;
+                }
+                const itemsList = wishlist.map(item => item.name).join(', ');
+                const msg = `Hi, I want to buy these items from my wishlist: ${itemsList}`;
+                window.open(`https://wa.me/201288640166?text=${encodeURIComponent(msg)}`, '_blank');
+            });
+        });
+    </script>
+</body>
+
+</html>
