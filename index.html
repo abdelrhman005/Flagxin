@@ -569,7 +569,7 @@ We create statements </p>
                     </div>
                     <div class="font-label-bold text-secondary uppercase" style="margin-bottom: 1rem;"></div>
                     <div class="flex gap-3">
-                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-1" data-product-name="GRIT HOODIE V1" data-product-image="imges/product1.png" aria-label="Add to wishlist">
+                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-1" data-product-name="Marwan Pablo Flag" data-product-image="imges/product1.png" aria-label="Add to wishlist">
                             <span class="material-symbols-outlined wishlist-icon" style="font-size: 1.5rem;">favorite</span>
                         </button>
                         <a href="https://wa.me/201288640166?text=Hello%2C%20I%20need%20to%20make%20an%20order" target="_blank" rel="noopener noreferrer" class="flex-grow flex items-center justify-center font-label-bold text-white bg-red-600 border-2 border-red-600 hover:bg-black hover:shadow-[0_0_15px_rgba(225,6,0,0.4)] transition-all active:scale-95 uppercase" style="padding: 0.65rem 0;">
@@ -611,7 +611,7 @@ We create statements </p>
                     </div>
                     <div class="font-label-bold text-secondary uppercase" style="margin-bottom: 1rem;">Alexandria Edition</div>
                     <div class="flex gap-3">
-                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-2" data-product-name="VOID STRIDERS" data-product-image="imges/product2.png" aria-label="Add to wishlist">
+                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-2" data-product-name="Shehab Flag" data-product-image="imges/product2.png" aria-label="Add to wishlist">
                             <span class="material-symbols-outlined wishlist-icon" style="font-size: 1.5rem;">favorite</span>
                         </button>
                         <a href="https://wa.me/201288640166?text=Hello%2C%20I%20need%20to%20make%20an%20order" target="_blank" rel="noopener noreferrer" class="flex-grow flex items-center justify-center font-label-bold text-white bg-red-600 border-2 border-red-600 hover:bg-black hover:shadow-[0_0_15px_rgba(225,6,0,0.4)] transition-all active:scale-95 uppercase" style="padding: 0.65rem 0;">
@@ -634,7 +634,7 @@ We create statements </p>
                     </div>
                     <div class="font-label-bold text-secondary uppercase" style="margin-bottom: 1rem;"></div>
                     <div class="flex gap-3">
-                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-2" data-product-name="VOID STRIDERS" data-product-image="imges/product2.png" aria-label="Add to wishlist">
+                        <button class="wishlist-btn flex-shrink-0 flex items-center justify-center border-2 border-zinc-800 bg-black text-zinc-400 hover:border-red-600 hover:text-white transition-all active:scale-90" style="width: 3rem;" data-product-id="prod-3" data-product-name="Mrazmen Flag" data-product-image="imges/product3.png" aria-label="Add to wishlist">
                             <span class="material-symbols-outlined wishlist-icon" style="font-size: 1.5rem;">favorite</span>
                         </button>
                         <a href="https://wa.me/201288640166?text=Hello%2C%20I%20need%20to%20make%20an%20order" target="_blank" rel="noopener noreferrer" class="flex-grow flex items-center justify-center font-label-bold text-white bg-red-600 border-2 border-red-600 hover:bg-black hover:shadow-[0_0_15px_rgba(225,6,0,0.4)] transition-all active:scale-95 uppercase" style="padding: 0.65rem 0;">
@@ -755,15 +755,15 @@ We create statements </p>
                 <!-- Right: Form -->
                 <div class="bg-black border-2 border-zinc-800 p-8 reveal-item flex flex-col justify-center">
                     <h3 class="font-headline-md text-white uppercase mb-6">Send a Message</h3>
-                    <form class="space-y-4" onsubmit="event.preventDefault(); showToast('Message Sent!', 'send'); this.reset();">
+                    <form id="contactForm" class="space-y-4">
                         <div>
-                            <input type="text" placeholder="YOUR NAME" required class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600">
+                            <input id="contactName" type="text" placeholder="YOUR NAME" required class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600">
                         </div>
                         <div>
-                            <input type="email" placeholder="EMAIL ADDRESS" required class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600">
+                            <input id="contactEmail" type="email" placeholder="EMAIL ADDRESS" required class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600">
                         </div>
                         <div>
-                            <textarea placeholder="WHAT'S ON YOUR MIND?" required rows="4" class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600 resize-none"></textarea>
+                            <textarea id="contactMessage" placeholder="WHAT'S ON YOUR MIND?" required rows="4" class="w-full bg-zinc-900 border border-zinc-800 text-white font-label-bold px-4 py-3 focus:outline-none focus:border-red-600 transition-colors placeholder:text-zinc-600 resize-none"></textarea>
                         </div>
                         <button type="submit" class="w-full bg-red-600 text-white font-headline-md uppercase py-4 hover:bg-white hover:text-black transition-all active:scale-95">
                             Submit Request
@@ -806,12 +806,13 @@ We create statements </p>
             </div>
             <div>
                 <h4 class="font-label-bold text-white mb-6 uppercase tracking-widest">Join the Void</h4>
-                <div class="flex border-2 border-zinc-800">
+                <form id="newsletterForm" class="flex border-2 border-zinc-800">
                     <input
+                        id="newsletterEmail"
                         class="bg-transparent border-none w-full px-4 text-white font-label-bold placeholder:text-zinc-700 focus:ring-0"
-                        placeholder="EMAIL ADDRESS" type="email" />
-                    <button class="bg-white text-black p-2 font-black">GO</button>
-                </div>
+                        placeholder="EMAIL ADDRESS" required type="email" />
+                    <button type="submit" class="bg-white text-black p-2 font-black">GO</button>
+                </form>
             </div>
         </div>
         <div class="flex flex-col md:flex-row justify-between pt-8 border-t border-zinc-900">
@@ -948,6 +949,8 @@ We create statements </p>
                 });
 
             const wishlistItemsContainer = document.getElementById('wishlistItemsContainer');
+            const wishlistOverlay = document.getElementById('wishlistOverlay');
+            const wishlistBtns = document.querySelectorAll('.wishlist-btn');
             
             // Load from localStorage
             let wishlist = JSON.parse(localStorage.getItem('flagxin_wishlist')) || [];
@@ -1046,6 +1049,39 @@ We create statements </p>
                 const msg = `Hi, I want to buy these items from my wishlist: ${itemsList}`;
                 window.open(`https://wa.me/201288640166?text=${encodeURIComponent(msg)}`, '_blank');
             });
+
+            // Contact Form Submission to WhatsApp
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('contactName').value.trim();
+                    const email = document.getElementById('contactEmail').value.trim();
+                    const message = document.getElementById('contactMessage').value.trim();
+                    
+                    const text = `Hello Flagxin! I would like to get in touch:\n\n*Name:* ${name}\n*Email:* ${email}\n*Message:* ${message}`;
+                    const whatsappUrl = `https://wa.me/201288640166?text=${encodeURIComponent(text)}`;
+                    
+                    showToast('Opening WhatsApp to send message...', 'send');
+                    setTimeout(() => {
+                        window.open(whatsappUrl, '_blank');
+                        contactForm.reset();
+                    }, 1000);
+                });
+            }
+
+            // Newsletter Form Submission
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('newsletterEmail').value.trim();
+                    
+                    // Show a toast and reset
+                    showToast('Successfully joined the newsletter list!', 'mail');
+                    newsletterForm.reset();
+                });
+            }
         });
     </script>
 </body>
